@@ -4,3 +4,11 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+profile_controller:
+  resource: ../src/Identity/Infrastructure/Http/Controller/
+  type: attribute
+
+photo_controllers:
+  resource: ../src/Photo/Infrastructure/Http/Controller/
+  type: attribute

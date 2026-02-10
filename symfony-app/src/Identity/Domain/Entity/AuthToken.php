@@ -2,28 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\Likes;
+namespace App\Identity\Domain\Entity;
 
-use App\Entity\Photo;
-use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: LikeRepository::class)]
-#[ORM\Table(name: 'likes')]
-class Like
+#[ORM\Entity]
+#[ORM\Table(name: 'auth_tokens')]
+class AuthToken
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $token;
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
-
-    #[ORM\ManyToOne(targetEntity: Photo::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private Photo $photo;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;
@@ -31,6 +28,22 @@ class Like
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): self
+    {
+        $this->token = $token;
+        return $this;
     }
 
     public function getUser(): User
@@ -41,17 +54,6 @@ class Like
     public function setUser(User $user): self
     {
         $this->user = $user;
-        return $this;
-    }
-
-    public function getPhoto(): Photo
-    {
-        return $this->photo;
-    }
-
-    public function setPhoto(Photo $photo): self
-    {
-        $this->photo = $photo;
         return $this;
     }
 

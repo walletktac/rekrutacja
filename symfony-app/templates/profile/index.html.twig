@@ -196,7 +196,31 @@
                 <div class="profile-bio-text">{{ user.bio }}</div>
             </div>
         {% endif %}
-        
+
+        <div class="profile-bio">
+            <div class="profile-bio-label">Phoenix API token</div>
+
+            <form method="post" action="{{ path('profile_phoenix_token') }}">
+                <input
+                        type="password"
+                        name="phoenix_token"
+                        placeholder="{{ user.phoenixApiToken ? 'Token is set (leave empty to clear)' : 'Paste Phoenix token here' }}"
+                        style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-top: 10px;"
+                />
+
+                <div style="margin-top: 12px; display:flex; gap:10px; justify-content:center;">
+                    <button type="submit" class="back-button" style="margin-top:0;">Save token</button>
+                </div>
+
+                {% if user.phoenixApiToken %}
+                    <div style="margin-top:10px; color:#999; font-size:0.9em; text-align:center;">
+                        Token is stored. Submit empty input to clear it.
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+
+
         <div class="profile-stats">
             <div class="stat-item">
                 <div class="stat-number">{{ user.photos|length }}</div>

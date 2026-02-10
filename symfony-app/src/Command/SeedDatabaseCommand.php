@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\AuthToken;
-use App\Entity\Photo;
-use App\Entity\User;
+use App\Identity\Domain\Entity\AuthToken;
+use App\Identity\Domain\Entity\User;
+use App\Photo\Domain\Entity\Photo;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -70,13 +71,7 @@ class SeedDatabaseCommand extends Command
 
         $users = [];
         foreach ($usersData as $userData) {
-            $user = new User();
-            $user->setUsername($userData['username'])
-                ->setEmail($userData['email'])
-                ->setName($userData['name'])
-                ->setLastName($userData['lastName'])
-                ->setAge($userData['age'])
-                ->setBio($userData['bio']);
+            $user = new User($userData['username'], $userData['email'], $userData['name'], $userData['lastName'], $userData['age'], $userData['bio']);
 
             $this->entityManager->persist($user);
             $users[] = $user;
@@ -201,13 +196,15 @@ class SeedDatabaseCommand extends Command
         ];
 
         foreach ($photosData as $photoData) {
-            $photo = new Photo();
-            $photo->setImageUrl($photoData['imageUrl'])
-                ->setLocation($photoData['location'])
-                ->setDescription($photoData['description'])
-                ->setCamera($photoData['camera'])
-                ->setTakenAt(new \DateTimeImmutable($photoData['takenAt']))
-                ->setUser($users[$photoData['userIndex']]);
+            $user = $users[$photoData['userIndex']];
+
+            $photo = new Photo($user, $photoData['imageUrl']);
+            $photo->updateDetails(
+                location: $photoData['location'],
+                description: $photoData['description'],
+                camera: $photoData['camera'],
+                takenAt: new DateTimeImmutable($photoData['takenAt']),
+            );
 
             $this->entityManager->persist($photo);
 
