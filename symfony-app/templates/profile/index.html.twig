@@ -218,12 +218,18 @@
                     </div>
                 {% endif %}
             </form>
+
+            <form method="post" action="{{ path('profile_phoenix_import') }}" style="margin-top: 12px; text-align:center;">
+                {% if user.phoenixApiToken %}
+                    <button type="submit" class="back-button" style="margin-top:0;">Import photo</button>
+                {% endif %}
+            </form>
         </div>
 
 
         <div class="profile-stats">
             <div class="stat-item">
-                <div class="stat-number">{{ user.photos|length }}</div>
+                <div class="stat-number">{{ photoCount }}</div>
                 <div class="stat-label">Photos</div>
             </div>
         </div>

@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Identity\Infrastructure\Http\Controller;
 
 use App\Identity\Infrastructure\Security\CurrentUserProvider;
+use App\Photo\Application\Service\ImportPhoenixPhotosService;
+use App\Photo\Domain\Entity\Photo;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,15 +18,21 @@ use Symfony\Component\Routing\Annotation\Route;
 final class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'profile', methods: ['GET'])]
-    public function profile(CurrentUserProvider $currentUser): Response
+    public function profile(
+        CurrentUserProvider $currentUser,
+        EntityManagerInterface $entityManager,
+    ): Response
     {
         $user = $currentUser->get();
         if ($user === null) {
             return $this->redirectToRoute('home');
         }
 
+        $photoCount = $entityManager->getRepository(Photo::class)->count(['user' => $user]);
+
         return $this->render('profile/index.html.twig', [
             'user' => $user,
+            'photoCount' => $photoCount,
         ]);
     }
 
@@ -52,6 +61,27 @@ final class ProfileController extends AbstractController
 
             $em->flush();
         } catch (InvalidArgumentException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('profile');
+    }
+
+    #[Route('/profile/phoenix-import', name: 'profile_phoenix_import', methods: ['POST'])]
+    public function importPhoenix(
+        CurrentUserProvider $currentUser,
+        ImportPhoenixPhotosService $importer,
+    ): Response {
+        $user = $currentUser->get();
+
+        if ($user === null) {
+            return $this->redirectToRoute('home');
+        }
+
+        try {
+            $count = $importer->import($user);
+            $this->addFlash('success', sprintf('Imported %d photos from Phoenix.', $count));
+        } catch (InvalidArgumentException|RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 

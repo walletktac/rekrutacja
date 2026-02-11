@@ -153,6 +153,16 @@
 {% endblock %}
 
 {% block body %}
+
+    <form method="get" style="margin: 20px auto; max-width: 1100px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+        <input name="location" placeholder="Location" value="{{ filters.location ?? '' }}">
+        <input name="camera" placeholder="Camera" value="{{ filters.camera ?? '' }}">
+        <input name="description" placeholder="Description" value="{{ filters.description ?? '' }}">
+        <input type="date" name="taken_at" value="{{ filters.takenAt ? filters.takenAt|date('Y-m-d') : '' }}">
+        <input name="username" placeholder="Username" value="{{ filters.username ?? '' }}">
+        <button type="submit">Filter</button>
+        <a href="{{ path('home') }}">Reset</a>
+    </form>
     {% if photos|length > 0 %}
         <div class="photo-grid">
             {% for photo in photos %}
@@ -160,9 +170,9 @@
                     <div class="photo-image-container">
                         <img src="{{ photo.imageUrl }}" alt="{{ photo.description }}">
                         {% if currentUser %}
-{#                            <a href="{{ path('photo_like', {id: photo.id}) }}" class="like-button {{ userLikes[photo.id] ? 'liked' : '' }}">#}
-                            <a href="{{ (userLikes[photo.id] ?? false) ? 'liked' : '' }}" class="like-button {{ (userLikes[photo.id] ?? false) ? 'liked' : '' }}">
-                                {{ userLikes[photo.id] ? '❤️' : '🤍' }}
+                            <a href="{{ path('photo_like', {id: photo.id}) }}"
+                               class="like-button {{ (userLikes[photo.id] ?? false) ? 'liked' : '' }}">
+                                {{ (userLikes[photo.id] ?? false) ? '❤️' : '🤍' }}
                                 <span>{{ photo.likeCounter }}</span>
                             </a>
                         {% else %}

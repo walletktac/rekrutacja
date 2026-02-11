@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
-final class User
+class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

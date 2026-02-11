@@ -8,3 +8,7 @@ services:
         exclude:
             - '../src/Kernel.php'
             - '../src/**/Domain/Entity/'
+
+    App\Photo\Infrastructure\Http\PhoenixClient:
+      arguments:
+        $baseUrl: '%env(PHOENIX_BASE_URL)%'
