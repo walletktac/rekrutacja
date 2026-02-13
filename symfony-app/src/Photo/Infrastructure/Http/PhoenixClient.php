@@ -8,7 +8,7 @@ use RuntimeException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
-final class PhoenixClient
+class PhoenixClient
 {
     public function __construct(
         private readonly HttpClientInterface $http,

@@ -11,7 +11,7 @@ use InvalidArgumentException;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'photos')]
-final class Photo
+class Photo
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
